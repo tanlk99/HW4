@@ -23,9 +23,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
+import com.parse.GetCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +59,7 @@ public class LoginActivity extends PlusBaseActivity implements LoaderCallbacks<C
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mUsernameView;
     private View mProgressView;
     private View mEmailLoginFormView;
     private SignInButton mPlusSignInButton;
@@ -68,7 +72,7 @@ public class LoginActivity extends PlusBaseActivity implements LoaderCallbacks<C
         setContentView(R.layout.activity_login);
 
         // Find the Google+ sign in button.
-        mPlusSignInButton = (SignInButton) findViewById(R.id.plus_sign_in_button);
+        mPlusSignInButton = (SignInButton)findViewById(R.id.plus_sign_in_button);
         if (supportsGooglePlayServices()) {
             // Set a listener to connect the user when the G+ button is clicked.
             mPlusSignInButton.setOnClickListener(new OnClickListener() {
@@ -88,6 +92,7 @@ public class LoginActivity extends PlusBaseActivity implements LoaderCallbacks<C
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
+        mUsernameView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -130,45 +135,48 @@ public class LoginActivity extends PlusBaseActivity implements LoaderCallbacks<C
         }
 
         // Reset errors.
+        mUsernameView.setError(null);
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
+        String username = mUsernameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
+        if (TextUtils.isEmpty(email)) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
+            cancel = true;
+        }
+        else if (!isEmailValid(email)) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailView;
+            cancel = true;
+        }
 
-        // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+        if (TextUtils.isEmpty(username)) {
+            mUsernameView.setError("This field is required");
+            focusView = mUsernameView;
             cancel = true;
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
+        }
+        else {
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask = new UserLoginTask(username, password, email);
+            mAuthTask.execute((Void)null);
         }
     }
 
@@ -182,14 +190,8 @@ public class LoginActivity extends PlusBaseActivity implements LoaderCallbacks<C
         return password.length() > 4;
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -211,8 +213,6 @@ public class LoginActivity extends PlusBaseActivity implements LoaderCallbacks<C
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
@@ -220,7 +220,6 @@ public class LoginActivity extends PlusBaseActivity implements LoaderCallbacks<C
 
     @Override
     protected void onPlusClientSignIn() {
-        //Set up sign out and disconnect buttons.
         Button signOutButton = (Button) findViewById(R.id.plus_sign_out_button);
         signOutButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -263,15 +262,9 @@ public class LoginActivity extends PlusBaseActivity implements LoaderCallbacks<C
 
     }
 
-    /**
-     * Check if the device supports Google Play Services.  It's best
-     * practice to check first rather than handling this as an error case.
-     *
-     * @return whether the device supports Google Play Services
-     */
     private boolean supportsGooglePlayServices() {
-        return GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) ==
-                ConnectionResult.SUCCESS;
+        return false;
+        //return GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS;
     }
 
     @Override
@@ -336,30 +329,41 @@ public class LoginActivity extends PlusBaseActivity implements LoaderCallbacks<C
 
         private final String mEmail;
         private final String mPassword;
+        private final String mUsername;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String username, String password, String email) {
+            mUsername = username;
             mEmail = email;
             mPassword = password;
+
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
+            for (String credential : ParseUser) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     return pieces[1].equals(mPassword);
                 }
             }
+
+            boolean success = false;
+            ParseQuery<ParseUser> query = ParseUser.getQuery();
+            query.whereEqualTo("username", mUsername);
+            query.getInBackground(mUsername, new GetCallback<ParseUser>() {
+                @Override
+                public void done(ParseUser user, ParseException e) {
+                    if (e == null) {
+                        user.logInInBackground(mUsername, mPassword);
+                    }
+                    else {
+
+                    }
+                }
+            });
 
             // TODO: register the new account here.
             return true;

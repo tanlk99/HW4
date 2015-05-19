@@ -35,7 +35,7 @@ public class CoreActivity extends ActionBarActivity {
         testObject.saveInBackground();
         */
 
-        Intent intent = new Intent(CoreActivity.this, SignupActivity.class);
+        Intent intent = new Intent(CoreActivity.this, LoginActivity.class);
         startActivity(intent);
     }
 

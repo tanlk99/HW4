@@ -1,11 +1,13 @@
 package com.example.xtan.cepnet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,10 +34,11 @@ public class CoreActivity extends ActionBarActivity {
         ParseObject testObject = new ParseObject("TestObject");
         testObject.put("foo", "bar");
         testObject.saveInBackground();
+        */
 
+        Log.d("Start Login", "Login");
         Intent intent = new Intent(CoreActivity.this, LoginActivity.class);
         startActivity(intent);
-        */
     }
 
 

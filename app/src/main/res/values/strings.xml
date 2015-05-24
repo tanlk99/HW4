@@ -6,6 +6,6 @@
     <string name="title_section3">Section 3</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Smoke Weed Everyday</string>
-
+    <string name="action_logout">Logout</string>
+    <string name="fragment_friend_text">This is an automated message. Please say hello.</string>
 </resources>

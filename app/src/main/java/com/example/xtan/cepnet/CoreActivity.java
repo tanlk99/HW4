@@ -12,6 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.parse.ParseUser;
 
 import java.util.Locale;
 
@@ -35,10 +38,14 @@ public class CoreActivity extends ActionBarActivity {
         testObject.saveInBackground();
         */
 
-        Intent intent = new Intent(CoreActivity.this, LoginActivity.class);
-        startActivity(intent);
-    }
+        ParseUser user = ParseUser.getCurrentUser();
+        if (user == null) {
+            Intent intent = new Intent(CoreActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
 
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -124,12 +131,14 @@ public class CoreActivity extends ActionBarActivity {
         }
 
         public PlaceholderFragment() {
+
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_core, container, false);
+            TextView text = (TextView)rootView.findViewById(R.id.section_label);
+            text.setText("Current Tab: " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
     }

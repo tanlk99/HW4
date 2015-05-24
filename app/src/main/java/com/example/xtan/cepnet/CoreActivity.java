@@ -1,6 +1,5 @@
 package com.example.xtan.cepnet;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,10 +32,10 @@ public class CoreActivity extends ActionBarActivity {
         ParseObject testObject = new ParseObject("TestObject");
         testObject.put("foo", "bar");
         testObject.saveInBackground();
-        */
 
         Intent intent = new Intent(CoreActivity.this, LoginActivity.class);
         startActivity(intent);
+        */
     }
 
 

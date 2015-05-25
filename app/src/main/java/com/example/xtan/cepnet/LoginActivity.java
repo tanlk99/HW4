@@ -72,44 +72,18 @@ public class LoginActivity extends Activity {
         }
         else {
             showProgress(true);
-            ParseQuery<ParseUser> query = ParseQuery.getQuery("_User");
+            ParseQuery<ParseUser> query = ParseUser.getQuery();
             query.whereEqualTo("username", username);
 
             query.getFirstInBackground(new GetCallback<ParseUser>() {
                 @Override
                 public void done(ParseUser user, ParseException e) {
                     if (e == null) {
-                        user.logInInBackground(username, password, new LogInCallback() {
-                            @Override
-                            public void done(ParseUser logInUser, ParseException e) {
-                                showProgress(false);
-                                if (e == null && logInUser != null) finish();
-                                else if (logInUser == null) {
-                                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                                    mPasswordView.requestFocus();
-                                }
-                                else {
-                                    Toast.makeText(getApplicationContext(), "Terrible Mistake", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+                        logInUser(username, password, user);
                     }
                     else {
                         if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                            ParseUser newUser = new ParseUser();
-                            newUser.setUsername(username);
-                            newUser.setPassword(password);
-
-                            newUser.signUpInBackground(new SignUpCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    showProgress(false);
-                                    if (e == null) finish();
-                                    else {
-                                        Toast.makeText(getApplicationContext(), "Terrible Mistake", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
+                            signUpUser(username, password);
                         }
                     }
                 }
@@ -143,6 +117,40 @@ public class LoginActivity extends Activity {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    public void logInUser(String username, String password, ParseUser user) {
+        user.logInInBackground(username, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser logInUser, ParseException e) {
+                showProgress(false);
+                if (e == null && logInUser != null) finish();
+                else if (logInUser == null) {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Terrible Mistake", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    public void signUpUser(String username, String password) {
+        ParseUser newUser = new ParseUser();
+        newUser.setUsername(username);
+        newUser.setPassword(password);
+
+        newUser.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                showProgress(false);
+                if (e == null) finish();
+                else {
+                    Toast.makeText(getApplicationContext(), "Terrible Mistake", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }
 

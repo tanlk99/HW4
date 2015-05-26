@@ -7,5 +7,5 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_logout">Logout</string>
-    <string name="fragment_friend_text">This is an automated message. Please say hello.</string>
+    <string name="fragment_user_title">User List</string>
 </resources>

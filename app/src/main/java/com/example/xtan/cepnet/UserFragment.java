@@ -49,7 +49,7 @@ public class UserFragment extends Fragment {
                 if (e == null) {
                     mUserList = users;
                     Toast.makeText(getActivity(), Integer.toString(mUserList.size()), Toast.LENGTH_LONG).show();
-                    ParseUserAdapter mAdapter = new ParseUserAdapter(getActivity(), android.R.layout.simple_list_item_1, mUserList);
+                    UserAdapter mAdapter = new UserAdapter(getActivity(), R.layout.fragment_user_row, mUserList);
                     mListView.setAdapter(mAdapter);
                 }
             }

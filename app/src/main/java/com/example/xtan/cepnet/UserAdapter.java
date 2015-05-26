@@ -1,26 +1,28 @@
 package com.example.xtan.cepnet;
 
 import android.content.Context;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.parse.ParseUser;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by xtan on 5/25/2015.
  */
-public class UserAdapter extends ArrayAdapter<ParseUser> {
+public class UserAdapter extends ArrayAdapter< Pair<ParseUser, Boolean> > {
     private Context mContext;
-    private List<ParseUser> mParseUserList;
+    private List< Pair<ParseUser, Boolean> > mParseUserList;
     private int mLayoutResourceId;
 
-    public UserAdapter(Context context, int layoutResourceId, List<ParseUser> parseUserList) {
+    public UserAdapter(Context context, int layoutResourceId, List< Pair<ParseUser, Boolean> > parseUserList) {
         super(context, android.R.layout.simple_list_item_1, parseUserList);
         mContext = context;
         mLayoutResourceId = layoutResourceId;
@@ -37,20 +39,29 @@ public class UserAdapter extends ArrayAdapter<ParseUser> {
 
             holder = new UserHolder();
             holder.mNameView = (TextView)row.findViewById(R.id.user_list_name);
-            holder.mToggleButton = (ImageButton)row.findViewById(R.id.toggle_friend);
+            holder.mToggleFriend = (ImageView)row.findViewById(R.id.toggle_friend);
             row.setTag(holder);
         }
         else {
             holder = (UserHolder)row.getTag();
         }
 
-        ParseUser currentUser = mParseUserList.get(position);
-        holder.mNameView.setText(currentUser.getUsername());
+        final Pair<ParseUser, Boolean> currentUser = mParseUserList.get(position);
+        holder.mNameView.setText(currentUser.first.getUsername());
+        holder.mToggleFriend.setClickable(true);
+        holder.mToggleFriend.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ParseUser user = ParseUser.getCurrentUser();
+                if (!currentUser.second) user.add("friendList", currentUser.first);
+                else user.removeAll("friendList", Arrays.asList(currentUser.first));
+            }
+        });
+
         return row;
     }
 
     static class UserHolder {
         private TextView mNameView;
-        private ImageButton mToggleButton;
+        private ImageView mToggleFriend;
     }
 }

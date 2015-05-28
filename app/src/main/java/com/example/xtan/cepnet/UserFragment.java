@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserFragment extends Fragment {
-    private ListView mListView;
+    private ListView mUserListView;
     private ProgressBar mProgressView;
     private List< Pair<ParseUser, Boolean> > mUserList = new ArrayList< Pair<ParseUser, Boolean> >();
     private ParseUser mUser;
@@ -38,8 +38,8 @@ public class UserFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_user, container, false);
-        mListView = (ListView)rootView.findViewById(R.id.user_list);
+        View rootView = inflater.inflate(R.layout.fragment_user, container, false);
+        mUserListView = (ListView)rootView.findViewById(R.id.user_list);
         mProgressView = (ProgressBar)rootView.findViewById(R.id.user_list_progress);
         loadUserList();
         return rootView;
@@ -79,8 +79,8 @@ public class UserFragment extends Fragment {
                     }
 
                     UserAdapter mAdapter = new UserAdapter(getActivity(), R.layout.fragment_user_row, mUserList);
-                    mListView.setAdapter(mAdapter);
-                    mListView.setClickable(true);
+                    mUserListView.setAdapter(mAdapter);
+                    mUserListView.setClickable(true);
                 }
             }
         });
@@ -97,11 +97,11 @@ public class UserFragment extends Fragment {
                     mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
-            mListView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mUserListView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
         else {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mListView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mUserListView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 }

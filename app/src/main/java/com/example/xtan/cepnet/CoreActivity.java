@@ -24,6 +24,7 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
     UserFragment mUserFragment;
+    ChatFragment mChatFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +78,17 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
 
         @Override
         public Fragment getItem(int position) {
-            if (position > 0) return PlaceholderFragment.newInstance(position + 1);
-            else {
+            if (position == 0) {
                 UserFragment userTab = new UserFragment();
                 mUserFragment = userTab;
                 return userTab;
             }
+            else if (position == 1) {
+                ChatFragment chatTab = new ChatFragment();
+                mChatFragment = chatTab;
+                return chatTab;
+            }
+            else return PlaceholderFragment.newInstance(position + 1);
         }
 
         @Override

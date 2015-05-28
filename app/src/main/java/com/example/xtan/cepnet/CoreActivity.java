@@ -20,9 +20,10 @@ import com.parse.ParseUser;
 import java.util.Locale;
 
 
-public class CoreActivity extends ActionBarActivity {
+public class CoreActivity extends ActionBarActivity implements UserAdapter.UpdateInterface {
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
+    UserFragment mUserFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +79,9 @@ public class CoreActivity extends ActionBarActivity {
         public Fragment getItem(int position) {
             if (position > 0) return PlaceholderFragment.newInstance(position + 1);
             else {
-                Fragment friendTab = new UserFragment();
-                return friendTab;
+                UserFragment userTab = new UserFragment();
+                mUserFragment = userTab;
+                return userTab;
             }
         }
 
@@ -127,5 +129,9 @@ public class CoreActivity extends ActionBarActivity {
             text.setText(pager.getAdapter().getPageTitle(getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
+    }
+
+    public void loadFragmentUserList() {
+        mUserFragment.loadUserList();
     }
 }

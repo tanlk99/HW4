@@ -21,6 +21,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import java.util.ArrayList;
+
 public class LoginActivity extends Activity {
     private TextView mLoginTextView;
     private EditText mUsernameView;
@@ -140,7 +142,7 @@ public class LoginActivity extends Activity {
         ParseUser newUser = new ParseUser();
         newUser.setUsername(username);
         newUser.setPassword(password);
-
+        newUser.put("friendList", new ArrayList<ParseUser>());
         newUser.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {

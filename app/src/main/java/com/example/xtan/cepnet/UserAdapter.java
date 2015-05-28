@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.parse.ParseUser;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,12 +22,14 @@ public class UserAdapter extends ArrayAdapter< Pair<ParseUser, Boolean> > {
     private Context mContext;
     private List< Pair<ParseUser, Boolean> > mParseUserList;
     private int mLayoutResourceId;
+    private UpdateInterface mListener;
 
     public UserAdapter(Context context, int layoutResourceId, List< Pair<ParseUser, Boolean> > parseUserList) {
         super(context, android.R.layout.simple_list_item_1, parseUserList);
         mContext = context;
         mLayoutResourceId = layoutResourceId;
         mParseUserList = parseUserList;
+        mListener = (UpdateInterface)context;
     }
 
     @Override
@@ -49,11 +52,17 @@ public class UserAdapter extends ArrayAdapter< Pair<ParseUser, Boolean> > {
         final Pair<ParseUser, Boolean> currentUser = mParseUserList.get(position);
         holder.mNameView.setText(currentUser.first.getUsername());
         holder.mToggleFriend.setClickable(true);
+
+        if (currentUser.second) holder.mToggleFriend.setImageResource(R.drawable.delete_friend_icon);
+        else holder.mToggleFriend.setImageResource(R.drawable.add_friend_icon);
+
         holder.mToggleFriend.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 ParseUser user = ParseUser.getCurrentUser();
                 if (!currentUser.second) user.add("friendList", currentUser.first);
-                else user.removeAll("friendList", Arrays.asList(currentUser.first));
+                else user.removeAll("friendList", (Collection)Arrays.asList(currentUser.first));
+                user.saveInBackground();
+                mListener.loadFragmentUserList();
             }
         });
 
@@ -63,5 +72,9 @@ public class UserAdapter extends ArrayAdapter< Pair<ParseUser, Boolean> > {
     static class UserHolder {
         private TextView mNameView;
         private ImageView mToggleFriend;
+    }
+
+    public static interface UpdateInterface {
+        public void loadFragmentUserList();
     }
 }

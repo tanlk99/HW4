@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -42,9 +41,13 @@ public class UserFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_user, container, false);
         mListView = (ListView)rootView.findViewById(R.id.user_list);
         mProgressView = (ProgressBar)rootView.findViewById(R.id.user_list_progress);
-        mUser = ParseUser.getCurrentUser();
-        showProgress(true);
+        loadUserList();
+        return rootView;
+    }
 
+    public void loadUserList() {
+        showProgress(true);
+        mUser = ParseUser.getCurrentUser();
         final List<ParseUser> friendList = mUser.getList("friendList");
 
         ParseQuery<ParseUser> query = ParseUser.getQuery();
@@ -52,14 +55,20 @@ public class UserFragment extends Fragment {
             public void done(List<ParseUser> users, ParseException e) {
                 showProgress(false);
                 if (e == null) {
+                    mUserList.clear();
                     if (friendList != null) {
                         for (int i = 0; i < users.size(); i++) {
                             ParseUser user = users.get(i);
+                            boolean isFriend = false;
                             if (user.getUsername() == mUser.getUsername()) continue;
-                            for (int j = 0; j < friendList.size(); j++) {
-                                if (friendList.get(j).getUsername() == mUser.getUsername()) mUserList.add(new Pair(friendList.get(j), true));
-                                else mUserList.add(new Pair(friendList.get(j), false));
+                            for (int j = 0; j < friendList.size() && !isFriend; j++) {
+                                if (friendList.get(j).getUsername() == user.getUsername()) {
+                                    mUserList.add(new Pair(user, true));
+                                    isFriend = true;
+                                }
                             }
+
+                            if (!isFriend) mUserList.add(new Pair(user, false));
                         }
                     }
                     else {
@@ -69,15 +78,12 @@ public class UserFragment extends Fragment {
                         }
                     }
 
-                    Toast.makeText(getActivity(), Integer.toString(mUserList.size()), Toast.LENGTH_LONG).show();
                     UserAdapter mAdapter = new UserAdapter(getActivity(), R.layout.fragment_user_row, mUserList);
                     mListView.setAdapter(mAdapter);
                     mListView.setClickable(true);
                 }
             }
         });
-
-        return rootView;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -91,9 +97,11 @@ public class UserFragment extends Fragment {
                     mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
+            mListView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
         else {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mListView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 }

@@ -1,9 +1,11 @@
 package com.example.xtan.cepnet;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.parse.ParseUser;
 
@@ -26,6 +28,26 @@ public class ChatAdapter extends ArrayAdapter<ParseUser> {
 
     @Override
     public View getView(int position, View row, ViewGroup parent) {
+        ChatHolder holder = null;
+
+        if (row == null) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            row = inflater.inflate(mLayoutResourceId, parent, false);
+
+            holder = new ChatHolder();
+            holder.mNameView = (TextView)row.findViewById(R.id.chat_list_name);
+            row.setTag(holder);
+        }
+        else {
+            holder = (ChatHolder)row.getTag();
+        }
+
+        ParseUser currentUser = mChatUserList.get(position);
+        holder.mNameView.setText(currentUser.getUsername());
         return row;
+    }
+
+    static class ChatHolder {
+        private TextView mNameView;
     }
 }

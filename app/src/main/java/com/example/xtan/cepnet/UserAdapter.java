@@ -25,7 +25,7 @@ public class UserAdapter extends ArrayAdapter< Pair<ParseUser, Boolean> > {
     private UpdateInterface mListener;
 
     public UserAdapter(Context context, int layoutResourceId, List< Pair<ParseUser, Boolean> > parseUserList) {
-        super(context, android.R.layout.simple_list_item_1, parseUserList);
+        super(context, layoutResourceId, parseUserList);
         mContext = context;
         mLayoutResourceId = layoutResourceId;
         mParseUserList = parseUserList;

@@ -57,31 +57,22 @@ public class UserFragment extends Fragment {
                 showProgress(false);
                 if (e == null) {
                     mUserList.clear();
-                    if (friendList != null) {
-                        for (int i = 0; i < users.size(); i++) {
-                            ParseUser user = users.get(i);
-                            boolean isFriend = false;
-                            if (user.getUsername() == mUser.getUsername()) continue;
-                            for (int j = 0; j < friendList.size() && !isFriend; j++) {
-                                if (friendList.get(j).getUsername() == user.getUsername()) {
-                                    mUserList.add(new Pair(user, true));
-                                    isFriend = true;
-                                }
+                    for (int i = 0; i < users.size(); i++) {
+                        ParseUser user = users.get(i);
+                        boolean isFriend = false;
+                        if (user.getUsername() == mUser.getUsername()) continue;
+                        for (int j = 0; j < friendList.size() && !isFriend; j++) {
+                            if (friendList.get(j).getUsername() == user.getUsername()) {
+                                mUserList.add(new Pair(user, true));
+                                isFriend = true;
                             }
+                        }
 
-                            if (!isFriend) mUserList.add(new Pair(user, false));
-                        }
-                    }
-                    else {
-                        for (int i = 0; i < users.size(); i++) {
-                            ParseUser user = users.get(i);
-                            mUserList.add(new Pair(user, false));
-                        }
+                        if (!isFriend) mUserList.add(new Pair(user, false));
                     }
 
                     mUserListAdapter = new UserAdapter(getActivity(), R.layout.fragment_user_row, mUserList);
                     mUserListView.setAdapter(mUserListAdapter);
-                    mUserListView.setClickable(true);
                 }
             }
         });

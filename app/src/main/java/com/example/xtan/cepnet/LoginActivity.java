@@ -4,8 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +31,7 @@ public class LoginActivity extends Activity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +71,6 @@ public class LoginActivity extends Activity {
             cancel = true;
         }
 
-        Toast.makeText(getApplicationContext(), "User: " + username + " Password: " + password, Toast.LENGTH_LONG).show();
         if (cancel) {
             focusView.requestFocus();
         }
@@ -126,6 +128,7 @@ public class LoginActivity extends Activity {
             @Override
             public void done(ParseUser logInUser, ParseException e) {
                 showProgress(false);
+                LocalBroadcastManager.getInstance(LoginActivity.this).sendBroadcast(new Intent("login"));
                 if (e == null && logInUser != null) finish();
                 else if (logInUser == null) {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -146,6 +149,7 @@ public class LoginActivity extends Activity {
         newUser.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
+                LocalBroadcastManager.getInstance(LoginActivity.this).sendBroadcast(new Intent("login"));
                 showProgress(false);
                 if (e == null) finish();
                 else {

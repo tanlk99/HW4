@@ -1,10 +1,14 @@
 package com.example.xtan.cepnet;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Pair;
@@ -22,10 +26,11 @@ import java.util.Locale;
 
 
 public class CoreActivity extends ActionBarActivity implements UserAdapter.UpdateInterface {
-    SectionsPagerAdapter mSectionsPagerAdapter;
-    ViewPager mViewPager;
-    UserFragment mUserFragment;
-    ChatFragment mChatFragment;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
+    private UserFragment mUserFragment;
+    private ChatFragment mChatFragment;
+    private BroadcastReceiver mLoginReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,14 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mLoginReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Toast.makeText(CoreActivity.this, "Broadcast Received", Toast.LENGTH_LONG).show();
+                mViewPager.getAdapter().notifyDataSetChanged();
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(mLoginReceiver, new IntentFilter("login"));
 
         /*
         ParseObject testObject = new ParseObject("TestObject");
@@ -47,7 +60,11 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
             Intent intent = new Intent(CoreActivity.this, LoginActivity.class);
             startActivity(intent);
         }
-        else Toast.makeText(getApplicationContext(), "Welcome " + user.getUsername(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLoginReceiver);
     }
 
     @Override
@@ -109,6 +126,11 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
                     return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
     }
 

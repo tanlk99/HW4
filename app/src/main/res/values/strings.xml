@@ -8,5 +8,5 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_logout">Logout</string>
     <string name="fragment_user_title">User List</string>
-    <string name="fragment_chat_title">Chat</string>
+    <string name="fragment_chat_title">Chat List</string>
 </resources>

@@ -24,7 +24,8 @@ import java.util.List;
 public class UserFragment extends Fragment {
     private ListView mUserListView;
     private ProgressBar mProgressView;
-    private List< Pair<ParseUser, Boolean> > mUserList = new ArrayList< Pair<ParseUser, Boolean> >();
+    public List< Pair<ParseUser, Boolean> > mUserList = new ArrayList< Pair<ParseUser, Boolean> >();
+    public UserAdapter mUserListAdapter;
     private ParseUser mUser;
 
     public UserFragment() {
@@ -78,8 +79,8 @@ public class UserFragment extends Fragment {
                         }
                     }
 
-                    UserAdapter mAdapter = new UserAdapter(getActivity(), R.layout.fragment_user_row, mUserList);
-                    mUserListView.setAdapter(mAdapter);
+                    mUserListAdapter = new UserAdapter(getActivity(), R.layout.fragment_user_row, mUserList);
+                    mUserListView.setAdapter(mUserListAdapter);
                     mUserListView.setClickable(true);
                 }
             }

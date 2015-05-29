@@ -33,7 +33,7 @@ public class UserAdapter extends ArrayAdapter< Pair<ParseUser, Boolean> > {
     }
 
     @Override
-    public View getView(int position, View row, ViewGroup parent) {
+    public View getView(final int position, View row, ViewGroup parent) {
         UserHolder holder = null;
 
         if (row == null) {
@@ -62,7 +62,7 @@ public class UserAdapter extends ArrayAdapter< Pair<ParseUser, Boolean> > {
                 if (!currentUser.second) user.add("friendList", currentUser.first);
                 else user.removeAll("friendList", (Collection)Arrays.asList(currentUser.first));
                 user.saveInBackground();
-                mListener.loadFragmentUserList();
+                mListener.updateFragmentUserList(position);
             }
         });
 
@@ -75,6 +75,6 @@ public class UserAdapter extends ArrayAdapter< Pair<ParseUser, Boolean> > {
     }
 
     public static interface UpdateInterface {
-        public void loadFragmentUserList();
+        public void updateFragmentUserList(int position);
     }
 }

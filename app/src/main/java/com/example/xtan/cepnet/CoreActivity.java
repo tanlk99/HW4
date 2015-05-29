@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -137,7 +138,9 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
         }
     }
 
-    public void loadFragmentUserList() {
-        mUserFragment.loadUserList();
+    public void updateFragmentUserList(int position) {
+        Pair<ParseUser, Boolean> user1 = mUserFragment.mUserList.get(position);
+        mUserFragment.mUserList.set(position, new Pair(user1.first, !user1.second));
+        mUserFragment.mUserListAdapter.notifyDataSetChanged();
     }
 }

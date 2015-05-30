@@ -38,6 +38,10 @@
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
+        <activity
+            android:name=".ChatInterfaceActivity"
+            android:label="@string/title_activity_chat_interface" >
+        </activity>
     </application>
 
 </manifest>

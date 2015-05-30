@@ -10,4 +10,6 @@
     <string name="fragment_user_title">User List</string>
     <string name="fragment_chat_title">Chat List</string>
     <string name="chat_refresh">Refresh</string>
+    <string name="title_activity_chat_interface">ChatInterfaceActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>

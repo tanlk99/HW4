@@ -145,7 +145,7 @@ public class LoginActivity extends Activity {
         ParseUser newUser = new ParseUser();
         newUser.setUsername(username);
         newUser.setPassword(password);
-        newUser.put("friendList", new ArrayList<ParseUser>());
+        newUser.put("friendList", new ArrayList<String>());
         newUser.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {

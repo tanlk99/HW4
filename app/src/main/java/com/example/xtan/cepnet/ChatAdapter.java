@@ -7,19 +7,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.parse.ParseUser;
-
 import java.util.List;
 
 /**
  * Created by xtan on 5/28/2015.
  */
-public class ChatAdapter extends ArrayAdapter<ParseUser> {
+public class ChatAdapter extends ArrayAdapter<String> {
     private Context mContext;
-    private List<ParseUser> mChatUserList;
+    private List<String> mChatUserList;
     private int mLayoutResourceId;
 
-    public ChatAdapter(Context context, int layoutResourceId, List<ParseUser> chatUserList) {
+    public ChatAdapter(Context context, int layoutResourceId, List<String> chatUserList) {
         super(context, layoutResourceId, chatUserList);
         mContext = context;
         mLayoutResourceId = layoutResourceId;
@@ -42,8 +40,8 @@ public class ChatAdapter extends ArrayAdapter<ParseUser> {
             holder = (ChatHolder)row.getTag();
         }
 
-        ParseUser currentUser = mChatUserList.get(position);
-        holder.mNameView.setText(currentUser.getUsername());
+        String currentUser = mChatUserList.get(position);
+        holder.mNameView.setText(currentUser);
         return row;
     }
 

@@ -161,7 +161,7 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
     }
 
     public void updateFragmentUserList(int position) {
-        Pair<ParseUser, Boolean> user1 = mUserFragment.mUserList.get(position);
+        Pair<String, Boolean> user1 = mUserFragment.mUserList.get(position);
         mUserFragment.mUserList.set(position, new Pair(user1.first, !user1.second));
         mUserFragment.mUserListAdapter.notifyDataSetChanged();
     }

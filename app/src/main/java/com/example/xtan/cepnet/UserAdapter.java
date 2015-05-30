@@ -18,13 +18,13 @@ import java.util.List;
 /**
  * Created by xtan on 5/25/2015.
  */
-public class UserAdapter extends ArrayAdapter< Pair<ParseUser, Boolean> > {
+public class UserAdapter extends ArrayAdapter< Pair<String, Boolean> > {
     private Context mContext;
-    private List< Pair<ParseUser, Boolean> > mParseUserList;
+    private List< Pair<String, Boolean> > mParseUserList;
     private int mLayoutResourceId;
     private UpdateInterface mListener;
 
-    public UserAdapter(Context context, int layoutResourceId, List< Pair<ParseUser, Boolean> > parseUserList) {
+    public UserAdapter(Context context, int layoutResourceId, List< Pair<String, Boolean> > parseUserList) {
         super(context, layoutResourceId, parseUserList);
         mContext = context;
         mLayoutResourceId = layoutResourceId;
@@ -49,8 +49,8 @@ public class UserAdapter extends ArrayAdapter< Pair<ParseUser, Boolean> > {
             holder = (UserHolder)row.getTag();
         }
 
-        final Pair<ParseUser, Boolean> currentUser = mParseUserList.get(position);
-        holder.mNameView.setText(currentUser.first.getUsername());
+        final Pair<String, Boolean> currentUser = mParseUserList.get(position);
+        holder.mNameView.setText(currentUser.first);
         holder.mToggleFriend.setClickable(true);
 
         if (currentUser.second) holder.mToggleFriend.setImageResource(R.drawable.delete_friend_icon);

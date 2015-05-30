@@ -10,9 +10,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -25,9 +25,10 @@ import java.util.List;
 public class ChatFragment extends Fragment {
     private ListView mChatListView;
     private ProgressBar mProgressView;
-    private List<ParseUser> mChatList = new ArrayList<ParseUser>();
+    private List<String> mChatList = new ArrayList<String>();
     private ChatAdapter mChatListAdapter;
     private ParseUser mUser;
+    private Button mRefreshButton;
 
     public ChatFragment() {
 
@@ -43,14 +44,23 @@ public class ChatFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
         mChatListView = (ListView)rootView.findViewById(R.id.chat_list);
         mProgressView = (ProgressBar)rootView.findViewById(R.id.chat_list_progress);
+        mRefreshButton = (Button)rootView.findViewById(R.id.chat_list_refresh);
+        mRefreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadChatList();
+            }
+        });
+
         loadChatList();
         return rootView;
     }
 
     public void loadChatList() {
+        if (mProgressView.getVisibility() == View.VISIBLE) return;
         showProgress(true);
         mUser = ParseUser.getCurrentUser();
-        final List<ParseUser> friendList = mUser.getList("friendList");
+        final List<String> friendList = mUser.getList("friendList");
 
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.findInBackground(new FindCallback<ParseUser>() {
@@ -61,22 +71,21 @@ public class ChatFragment extends Fragment {
                     for (int i = 0; i < users.size(); i++) {
                         ParseUser user = users.get(i);
                         boolean isFriend = false;
-                        if (user.getUsername() == mUser.getUsername()) continue;
+                        if (user.getUsername().equals(mUser.getUsername())) continue;
                         for (int j = 0; j < friendList.size() && !isFriend; j++) {
-                            if (friendList.get(j).getUsername() == user.getUsername()) isFriend = true;
+                            if (friendList.get(j).equals(user.getUsername())) isFriend = true;
                         }
                         if (!isFriend) continue;
 
                         boolean isFriendFriend = false;
-                        List<ParseUser> friendFriendList = user.getList("friendList");
+                        List<String> friendFriendList = user.getList("friendList");
                         for (int j = 0; j < friendFriendList.size() && !isFriendFriend; j++) {
-                            if (friendFriendList.get(j).getUsername() == mUser.getUsername()) isFriendFriend = true;
+                            if (friendFriendList.get(j).equals(mUser.getUsername())) isFriendFriend = true;
                         }
                         if (!isFriendFriend) continue;
-                        mChatList.add(user);
+                        mChatList.add(user.getUsername());
                     }
 
-                    Toast.makeText(getActivity(), Integer.toString(mChatList.size()), Toast.LENGTH_LONG).show();
                     mChatListAdapter = new ChatAdapter(getActivity(), R.layout.fragment_chat_row, mChatList);
                     mChatListView.setAdapter(mChatListAdapter);
                 }

@@ -24,7 +24,7 @@ import java.util.List;
 public class UserFragment extends Fragment {
     private ListView mUserListView;
     private ProgressBar mProgressView;
-    public List< Pair<ParseUser, Boolean> > mUserList = new ArrayList< Pair<ParseUser, Boolean> >();
+    public List< Pair<String, Boolean> > mUserList = new ArrayList< Pair<String, Boolean> >();
     public UserAdapter mUserListAdapter;
     private ParseUser mUser;
 
@@ -49,7 +49,7 @@ public class UserFragment extends Fragment {
     public void loadUserList() {
         showProgress(true);
         mUser = ParseUser.getCurrentUser();
-        final List<ParseUser> friendList = mUser.getList("friendList");
+        final List<String> friendList = mUser.getList("friendList");
 
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.findInBackground(new FindCallback<ParseUser>() {
@@ -60,15 +60,15 @@ public class UserFragment extends Fragment {
                     for (int i = 0; i < users.size(); i++) {
                         ParseUser user = users.get(i);
                         boolean isFriend = false;
-                        if (user.getUsername() == mUser.getUsername()) continue;
+                        if (user.getUsername().equals(mUser.getUsername())) continue;
                         for (int j = 0; j < friendList.size() && !isFriend; j++) {
-                            if (friendList.get(j).getUsername() == user.getUsername()) {
-                                mUserList.add(new Pair(user, true));
+                            if (friendList.get(j).equals(user.getUsername())) {
+                                mUserList.add(new Pair(user.getUsername(), true));
                                 isFriend = true;
                             }
                         }
 
-                        if (!isFriend) mUserList.add(new Pair(user, false));
+                        if (!isFriend) mUserList.add(new Pair(user.getUsername(), false));
                     }
 
                     mUserListAdapter = new UserAdapter(getActivity(), R.layout.fragment_user_row, mUserList);

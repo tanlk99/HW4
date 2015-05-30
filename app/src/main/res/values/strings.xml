@@ -9,4 +9,5 @@
     <string name="action_logout">Logout</string>
     <string name="fragment_user_title">User List</string>
     <string name="fragment_chat_title">Chat List</string>
+    <string name="chat_refresh">Refresh</string>
 </resources>

@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -20,6 +21,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +35,12 @@ public class ChatInterfaceActivity extends ActionBarActivity {
     private List< Pair<String, Boolean> > mChatLog = new ArrayList< Pair<String, Boolean> >();
     private ListView mChatLogView;
     private ProgressBar mProgressView;
+
+    public class MessageComparator implements Comparator< Pair<String, Pair<Boolean, Date> > > {
+        public int compare(Pair<String, Pair<Boolean, Date> > a,  Pair<String, Pair<Boolean, Date> > b) {
+            return a.second.second.compareTo(b.second.second);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +56,7 @@ public class ChatInterfaceActivity extends ActionBarActivity {
         Intent intent = getIntent();
         mChatUsername = intent.getStringExtra("chatUser");
         getSupportActionBar().setTitle(mChatUsername);
-        loadChatLog();
+        loadChatUser();
     }
 
     public void loadChatUser() {
@@ -57,20 +66,52 @@ public class ChatInterfaceActivity extends ActionBarActivity {
         query.getFirstInBackground(new GetCallback<ParseUser>() {
             @Override
             public void done(ParseUser user, ParseException e) {
-                if (e != null) {
+                showProgress(false);
+                if (e == null) {
                     mChatUser = user;
-                    loadChatLog();
+                    loadChatLogP1();
                 }
             }
         });
     }
 
-    public void loadChatLog() {
-        ParseQuery query = ParseQuery.getQuery("chatMessage");
+    public void loadChatLogP1() {
+        ParseQuery query = ParseQuery.getQuery("ChatMessage");
+        query.whereEqualTo("userFrom", mUser.getUsername());
+        query.whereEqualTo("userTo", mChatUser.getUsername());
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> chatLog, ParseException e) {
                 if (e == null) {
+                    for (int i = 0; i < chatLog.size(); i++) {
+                        ParseObject message = chatLog.get(i);
+                        mTempChatLog.add(new Pair(message.get("content"), new Pair(true, message.getDate("createdAt"))));
+                    }
+                    loadChatLogP2();
+                }
+            }
+        });
+    }
+
+    public void loadChatLogP2() {
+        ParseQuery query = ParseQuery.getQuery("ChatMessage");
+        query.whereEqualTo("userFrom", mChatUser.getUsername());
+        query.whereEqualTo("userTo", mUser.getUsername());
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> chatLog, ParseException e) {
+                showProgress(false);
+                if (e == null) {
+                    for (int i = 0; i < chatLog.size(); i++) {
+                        ParseObject message = chatLog.get(i);
+                        mTempChatLog.add(new Pair(message.get("content"), new Pair(false, message.getDate("createdAt"))));
+                    }
+                    Collections.sort(mTempChatLog, new MessageComparator());
+                    for (int i = 0; i < mTempChatLog.size(); i++) {
+                        Pair<String, Pair<Boolean, Date> > item = mTempChatLog.get(i);
+                        mChatLog.add(new Pair(item.first, item.second));
+                    }
+                    Toast.makeText(ChatInterfaceActivity.this, Integer.toString(mTempChatLog.size()), Toast.LENGTH_LONG).show();
                 }
             }
         });

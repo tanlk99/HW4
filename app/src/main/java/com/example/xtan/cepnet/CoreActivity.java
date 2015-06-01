@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.ParseUser;
 
@@ -43,7 +42,6 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
         mLoginReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Toast.makeText(CoreActivity.this, "Broadcast Received", Toast.LENGTH_LONG).show();
                 mViewPager.getAdapter().notifyDataSetChanged();
             }
         };

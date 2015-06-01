@@ -14,7 +14,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
@@ -134,9 +133,6 @@ public class LoginActivity extends Activity {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();
                 }
-                else {
-                    Toast.makeText(getApplicationContext(), "Terrible Mistake", Toast.LENGTH_LONG).show();
-                }
             }
         });
     }
@@ -152,9 +148,6 @@ public class LoginActivity extends Activity {
                 LocalBroadcastManager.getInstance(LoginActivity.this).sendBroadcast(new Intent("login"));
                 showProgress(false);
                 if (e == null) finish();
-                else {
-                    Toast.makeText(getApplicationContext(), "Terrible Mistake", Toast.LENGTH_LONG).show();
-                }
             }
         });
     }

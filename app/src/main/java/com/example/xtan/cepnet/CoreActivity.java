@@ -9,9 +9,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.parse.ParseUser;
 
 import java.util.Locale;
-
 
 public class CoreActivity extends ActionBarActivity implements UserAdapter.UpdateInterface {
     private SectionsPagerAdapter mSectionsPagerAdapter;

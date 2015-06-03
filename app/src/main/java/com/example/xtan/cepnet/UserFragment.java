@@ -3,6 +3,7 @@ package com.example.xtan.cepnet;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -42,6 +44,16 @@ public class UserFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_user, container, false);
         mUserListView = (ListView)rootView.findViewById(R.id.user_list);
         mProgressView = (ProgressBar)rootView.findViewById(R.id.user_list_progress);
+
+        mUserListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), ProfileViewActivity.class);
+                intent.putExtra("viewUsername", mUserList.get(position).first);
+                startActivity(intent);
+            }
+        });
+
         loadUserList();
         return rootView;
     }

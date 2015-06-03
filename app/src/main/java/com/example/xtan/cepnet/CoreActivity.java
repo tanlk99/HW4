@@ -81,7 +81,14 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
             startActivity(intent);
             return true;
         }
-
+        else if (id == R.id.action_user) {
+            mViewPager.setCurrentItem(0);
+            return true;
+        }
+        else if (id == R.id.action_chat) {
+            mViewPager.setCurrentItem(1);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

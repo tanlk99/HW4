@@ -5,6 +5,20 @@
     tools:context=".CoreActivity">
 
     <item
+        android:id="@+id/action_user"
+        android:title="@string/action_user"
+        android:orderInCategory="0"
+        app:showAsAction="ifRoom"
+    />
+
+    <item
+        android:id="@+id/action_chat"
+        android:title="@string/action_chat"
+        android:orderInCategory="1"
+        app:showAsAction="ifRoom"
+    />
+
+    <item
         android:id="@+id/action_logout"
         android:title="@string/action_logout"
         android:orderInCategory="100"

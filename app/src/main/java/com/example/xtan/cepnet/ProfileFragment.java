@@ -38,7 +38,9 @@ public class ProfileFragment extends Fragment {
         mUser = ParseUser.getCurrentUser();
 
         if (mUser.getString("fullName") != null) mProfileNameView.setText(mUser.getString("fullName"));
+        else mProfileNameView.setText("");
         if (mUser.getString("email") != null) mProfileEmailView.setText(mUser.getEmail());
+        else mProfileEmailView.setText("");
 
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,5 +59,16 @@ public class ProfileFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mProfileNameView == null || mProfileEmailView == null) return;
+
+        if (mUser.getString("fullName") != null) mProfileNameView.setText(mUser.getString("fullName"));
+        else mProfileNameView.setText("");
+        if (mUser.getString("email") != null) mProfileEmailView.setText(mUser.getEmail());
+        else mProfileEmailView.setText("");
     }
 }

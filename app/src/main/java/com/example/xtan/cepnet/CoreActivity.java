@@ -7,7 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
@@ -30,6 +30,12 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_core);
 
+        ParseUser user = ParseUser.getCurrentUser();
+        if (user == null) {
+            Intent intent = new Intent(CoreActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -46,12 +52,6 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
         testObject.put("foo", "bar");
         testObject.saveInBackground();
         */
-
-        ParseUser user = ParseUser.getCurrentUser();
-        if (user == null) {
-            Intent intent = new Intent(CoreActivity.this, LoginActivity.class);
-            startActivity(intent);
-        }
     }
 
     @Override
@@ -92,7 +92,7 @@ public class CoreActivity extends ActionBarActivity implements UserAdapter.Updat
         return super.onOptionsItemSelected(item);
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

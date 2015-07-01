@@ -61,6 +61,8 @@ public class UserFragment extends Fragment {
     public void loadUserList() {
         showProgress(true);
         mUser = ParseUser.getCurrentUser();
+        if (mUser == null) return;
+
         final List<String> friendList = mUser.getList("friendList");
 
         ParseQuery<ParseUser> query = ParseUser.getQuery();

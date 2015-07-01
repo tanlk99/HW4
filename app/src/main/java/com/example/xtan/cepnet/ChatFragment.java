@@ -71,6 +71,8 @@ public class ChatFragment extends Fragment {
         if (mProgressView.getVisibility() == View.VISIBLE) return;
         showProgress(true);
         mUser = ParseUser.getCurrentUser();
+        if (mUser == null) return;
+
         final List<String> friendList = mUser.getList("friendList");
 
         ParseQuery<ParseUser> query = ParseUser.getQuery();
